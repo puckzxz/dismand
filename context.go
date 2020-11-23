@@ -24,3 +24,35 @@ func (c *Context) MemberHasPermission(permission disgord.PermissionBit) (bool, e
 
 	return perms.Contains(permission), nil
 }
+
+func (c *Context) MemberHasRole(role *disgord.Role) (bool, error) {
+	member, err := c.Client.Guild(c.Message.GuildID).Member(c.Message.Author.ID).Get()
+
+	if err != nil {
+		return false, err
+	}
+
+	for _, r := range member.Roles {
+		if r == role.ID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (c *Context) GetRoleByName(name string) (*disgord.Role, error) {
+	roles, err := c.Client.Guild(c.Message.GuildID).GetRoles()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range roles {
+		if r.Name == name {
+			return r, nil
+		}
+	}
+
+	return nil, nil
+}
