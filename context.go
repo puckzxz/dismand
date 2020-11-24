@@ -1,9 +1,14 @@
 package dismand
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/andersfylling/disgord"
+)
+
+var (
+	ERR_ROLE_NOT_FOUND = errors.New("Role not found")
 )
 
 type Context struct {
@@ -54,5 +59,5 @@ func (c *Context) GetRoleByName(name string) (*disgord.Role, error) {
 		}
 	}
 
-	return nil, nil
+	return nil, ERR_ROLE_NOT_FOUND
 }
