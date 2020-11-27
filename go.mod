@@ -2,4 +2,4 @@ module github.com/puckzxz/dismand
 
 go 1.15
 
-require github.com/andersfylling/disgord v0.22.0
+require github.com/andersfylling/disgord v0.23.0

@@ -22,7 +22,7 @@ func (c *Context) Reply(msg string) (*disgord.Message, error) {
 }
 
 func (c *Context) MemberHasPermission(permission disgord.PermissionBit) (bool, error) {
-	perms, err := c.Client.Guild(c.Message.GuildID).GetMemberPermissions(c.Message.Author.ID)
+	perms, err := c.Client.Guild(c.Message.GuildID).Member(c.Message.Author.ID).GetPermissions()
 	if err != nil {
 		return false, err
 	}
