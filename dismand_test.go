@@ -38,7 +38,7 @@ func Test_DismandNew(t *testing.T) {
 
 func Test_Disgoman_RegisterDefaults(t *testing.T) {
 
-	d := &Disgoman{}
+	d := &disgoman{}
 	ptr := d.RegisterDefaults()
 	if ptr == nil {
 		t.Error("RegisterDefaults returned a nil pointer")

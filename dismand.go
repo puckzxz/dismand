@@ -32,7 +32,7 @@ func (c *cmd) Example(example string) *cmd {
 	return c
 }
 
-type Disgoman struct {
+type disgoman struct {
 	commands map[string]*cmd
 	client   *disgord.Client
 	cfg      *Config
@@ -42,8 +42,8 @@ type Config struct {
 	Prefix string
 }
 
-func New(client *disgord.Client, cfg *Config) *Disgoman {
-	return &Disgoman{
+func New(client *disgord.Client, cfg *Config) *disgoman {
+	return &disgoman{
 		client:   client,
 		cfg:      cfg,
 		commands: commands,
@@ -53,7 +53,7 @@ func New(client *disgord.Client, cfg *Config) *Disgoman {
 // RegisterDefaults registers the default Dismand commands
 //
 // - Ping
-func (d *Disgoman) RegisterDefaults() *Disgoman {
+func (d *disgoman) RegisterDefaults() *disgoman {
 	commands["ping"] = &cmd{
 		c: func(ctx *Context, args []string) {
 			ctx.Reply("Pong!")
@@ -65,7 +65,7 @@ func (d *Disgoman) RegisterDefaults() *Disgoman {
 	return d
 }
 
-func (d *Disgoman) On(command string, handler Command) *cmd {
+func (d *disgoman) On(command string, handler Command) *cmd {
 	c := &cmd{
 		c:           handler,
 		description: "No description provided",
@@ -76,7 +76,7 @@ func (d *Disgoman) On(command string, handler Command) *cmd {
 	return c
 }
 
-func (d *Disgoman) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
+func (d *disgoman) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
 	msg := evt.Message
 	if !strings.HasPrefix(msg.Content, d.cfg.Prefix) {
 		return
