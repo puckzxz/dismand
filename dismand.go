@@ -1,6 +1,7 @@
 package dismand
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/andersfylling/disgord"
@@ -16,6 +17,7 @@ type cmd struct {
 	group       string
 	example     string
 	enabled     bool
+	minPerm     disgord.PermissionBit
 }
 
 func (c *cmd) Description(desc string) *cmd {
@@ -30,6 +32,11 @@ func (c *cmd) Group(group string) *cmd {
 
 func (c *cmd) Example(example string) *cmd {
 	c.example = example
+	return c
+}
+
+func (c *cmd) MinPermission(perm disgord.PermissionBit) *cmd {
+	c.minPerm = perm
 	return c
 }
 
@@ -95,6 +102,7 @@ func (d *Dismand) On(command string, handler command) *cmd {
 		example:     "No example provided",
 		group:       "None",
 		enabled:     true,
+		minPerm:     0,
 	}
 	d.commands[command] = c
 	return c
@@ -122,8 +130,19 @@ func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) 
 	}
 
 	if cmd, ok := d.commands[commandName]; ok {
-		if cmd.enabled {
-			cmd.c(ctx, args)
+		hasPerms, err := ctx.MemberHasPermission(cmd.minPerm)
+		if err != nil {
+			fmt.Println("Failed to get member permissions")
+			return
 		}
+		if !hasPerms {
+			ctx.Reply(fmt.Sprintf("You do not have permissions to run the `%s` command.", commandName))
+			return
+		}
+		if !cmd.enabled {
+			ctx.Reply(fmt.Sprintf("`%s` has been disabled.", commandName))
+			return
+		}
+		cmd.c(ctx, args)
 	}
 }

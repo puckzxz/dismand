@@ -2,8 +2,6 @@ package dismand
 
 import (
 	"fmt"
-
-	"github.com/andersfylling/disgord"
 )
 
 func pingPong(ctx *Context, args []string) {
@@ -39,18 +37,6 @@ func enableCommand(ctx *Context, args []string) {
 		return
 	}
 
-	hasAdmin, err := ctx.MemberHasPermission(disgord.PermissionAdministrator)
-
-	if err != nil {
-		ctx.Reply(fmt.Sprintf("Command failed with err, %s", err))
-		return
-	}
-
-	if !hasAdmin {
-		ctx.Reply("You do not have permissions to run this command")
-		return
-	}
-
 	cmdName := args[0]
 
 	if c, found := commands[cmdName]; found {
@@ -61,18 +47,6 @@ func enableCommand(ctx *Context, args []string) {
 
 func disableCommand(ctx *Context, args []string) {
 	if len(args) != 1 {
-		return
-	}
-
-	hasAdmin, err := ctx.MemberHasPermission(disgord.PermissionAdministrator)
-
-	if err != nil {
-		ctx.Reply(fmt.Sprintf("Command failed with err, %s", err))
-		return
-	}
-
-	if !hasAdmin {
-		ctx.Reply("You do not have permissions to run this command")
 		return
 	}
 
