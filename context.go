@@ -71,3 +71,21 @@ func (c *Context) GetRoleByName(name string) (*disgord.Role, error) {
 
 	return nil, ErrRoleNotFound
 }
+
+// GetRoleByID will find the role in the server with the same ID.
+// Returns ErrRoleNotFound if the role was not found.
+func (c *Context) GetRoleByID(id disgord.Snowflake) (*disgord.Role, error) {
+	roles, err := c.Client.Guild(c.Message.GuildID).GetRoles()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range roles {
+		if r.ID == id {
+			return r, nil
+		}
+	}
+
+	return nil, ErrRoleNotFound
+}
