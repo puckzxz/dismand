@@ -8,10 +8,10 @@ import (
 
 var commands = make(map[string]*cmd)
 
-type Command func(*Context, []string)
+type command func(*Context, []string)
 
 type cmd struct {
-	c           Command
+	c           command
 	description string
 	group       string
 	example     string
@@ -32,18 +32,20 @@ func (c *cmd) Example(example string) *cmd {
 	return c
 }
 
-type disgoman struct {
+type Dismand struct {
 	commands map[string]*cmd
 	client   *disgord.Client
 	cfg      *Config
 }
 
+// Config contains settings for Dismand
 type Config struct {
 	Prefix string
 }
 
-func New(client *disgord.Client, cfg *Config) *disgoman {
-	return &disgoman{
+// New returns a Dismand instance
+func New(client *disgord.Client, cfg *Config) *Dismand {
+	return &Dismand{
 		client:   client,
 		cfg:      cfg,
 		commands: commands,
@@ -53,19 +55,23 @@ func New(client *disgord.Client, cfg *Config) *disgoman {
 // RegisterDefaults registers the default Dismand commands
 //
 // - Ping
-func (d *disgoman) RegisterDefaults() *disgoman {
+func (d *Dismand) RegisterDefaults() *Dismand {
 	commands["ping"] = &cmd{
-		c: func(ctx *Context, args []string) {
-			ctx.Reply("Pong!")
-		},
+		c:           pingPong,
 		description: "Ping Pong",
 		example:     "ping",
+		group:       "Default",
+	}
+	commands["help"] = &cmd{
+		c:           help,
+		description: "Shows information about a command",
+		example:     "help ping",
 		group:       "Default",
 	}
 	return d
 }
 
-func (d *disgoman) On(command string, handler Command) *cmd {
+func (d *Dismand) On(command string, handler command) *cmd {
 	c := &cmd{
 		c:           handler,
 		description: "No description provided",
@@ -76,7 +82,7 @@ func (d *disgoman) On(command string, handler Command) *cmd {
 	return c
 }
 
-func (d *disgoman) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
+func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
 	msg := evt.Message
 	if !strings.HasPrefix(msg.Content, d.cfg.Prefix) {
 		return

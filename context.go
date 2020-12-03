@@ -8,19 +8,25 @@ import (
 )
 
 var (
-	ERR_ROLE_NOT_FOUND = errors.New("Role not found")
+	// ErrRoleNotFound is returned when the searched role is not found
+	ErrRoleNotFound = errors.New("Role not found")
 )
 
+// Context contains the recieved message, the Disgord client, and the active session
 type Context struct {
 	Message *disgord.Message
 	Client  *disgord.Client
 	Session disgord.Session
 }
 
+// Reply will reply to the user that sent the message
+//
+// It WILL mention the user!
 func (c *Context) Reply(msg string) (*disgord.Message, error) {
 	return c.Client.SendMsg(c.Message.ChannelID, fmt.Sprintf("<@%s>, %s", c.Message.Author.ID, msg))
 }
 
+// MemberHasPermission will check if the user has the specified permission
 func (c *Context) MemberHasPermission(permission disgord.PermissionBit) (bool, error) {
 	perms, err := c.Client.Guild(c.Message.GuildID).Member(c.Message.Author.ID).GetPermissions()
 	if err != nil {
@@ -30,6 +36,7 @@ func (c *Context) MemberHasPermission(permission disgord.PermissionBit) (bool, e
 	return perms.Contains(permission), nil
 }
 
+// MemberHasRole will check if the user has the specified role
 func (c *Context) MemberHasRole(role *disgord.Role) (bool, error) {
 	member, err := c.Client.Guild(c.Message.GuildID).Member(c.Message.Author.ID).Get()
 
@@ -46,6 +53,9 @@ func (c *Context) MemberHasRole(role *disgord.Role) (bool, error) {
 	return false, nil
 }
 
+// GetRoleByName will try to find the role in the server with the same name.
+// If multiple roles have the same name it will return the first role.
+// Returns ErrRoleNotFound if the role was not found.
 func (c *Context) GetRoleByName(name string) (*disgord.Role, error) {
 	roles, err := c.Client.Guild(c.Message.GuildID).GetRoles()
 
@@ -59,5 +69,5 @@ func (c *Context) GetRoleByName(name string) (*disgord.Role, error) {
 		}
 	}
 
-	return nil, ERR_ROLE_NOT_FOUND
+	return nil, ErrRoleNotFound
 }
