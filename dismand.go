@@ -15,6 +15,7 @@ type cmd struct {
 	description string
 	group       string
 	example     string
+	enabled     bool
 }
 
 func (c *cmd) Description(desc string) *cmd {
@@ -61,12 +62,28 @@ func (d *Dismand) RegisterDefaults() *Dismand {
 		description: "Ping Pong",
 		example:     "ping",
 		group:       "Default",
+		enabled:     true,
 	}
 	commands["help"] = &cmd{
 		c:           help,
 		description: "Shows information about a command",
 		example:     "help ping",
 		group:       "Default",
+		enabled:     true,
+	}
+	commands["enable"] = &cmd{
+		c:           enableCommand,
+		description: "Enables a command",
+		example:     "enable ping",
+		group:       "Default",
+		enabled:     true,
+	}
+	commands["disable"] = &cmd{
+		c:           disableCommand,
+		description: "Disables a command",
+		example:     "disable ping",
+		group:       "Default",
+		enabled:     true,
 	}
 	return d
 }
@@ -77,6 +94,7 @@ func (d *Dismand) On(command string, handler command) *cmd {
 		description: "No description provided",
 		example:     "No example provided",
 		group:       "None",
+		enabled:     true,
 	}
 	d.commands[command] = c
 	return c
@@ -84,6 +102,7 @@ func (d *Dismand) On(command string, handler command) *cmd {
 
 func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
 	msg := evt.Message
+
 	if !strings.HasPrefix(msg.Content, d.cfg.Prefix) {
 		return
 	}
@@ -103,6 +122,8 @@ func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) 
 	}
 
 	if cmd, ok := d.commands[commandName]; ok {
-		cmd.c(ctx, args)
+		if cmd.enabled {
+			cmd.c(ctx, args)
+		}
 	}
 }

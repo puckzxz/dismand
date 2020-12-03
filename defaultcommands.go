@@ -1,6 +1,10 @@
 package dismand
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/andersfylling/disgord"
+)
 
 func pingPong(ctx *Context, args []string) {
 	ctx.Reply("Pong!")
@@ -27,5 +31,60 @@ func help(ctx *Context, args []string) {
 		}
 	default:
 		return
+	}
+}
+
+func enableCommand(ctx *Context, args []string) {
+	if len(args) != 1 {
+		return
+	}
+
+	hasAdmin, err := ctx.MemberHasPermission(disgord.PermissionAdministrator)
+
+	if err != nil {
+		ctx.Reply(fmt.Sprintf("Command failed with err, %s", err))
+		return
+	}
+
+	if !hasAdmin {
+		ctx.Reply("You do not have permissions to run this command")
+		return
+	}
+
+	cmdName := args[0]
+
+	if c, found := commands[cmdName]; found {
+		c.enabled = true
+		ctx.Reply(fmt.Sprintf("Enabled `%s`", cmdName))
+	}
+}
+
+func disableCommand(ctx *Context, args []string) {
+	if len(args) != 1 {
+		return
+	}
+
+	hasAdmin, err := ctx.MemberHasPermission(disgord.PermissionAdministrator)
+
+	if err != nil {
+		ctx.Reply(fmt.Sprintf("Command failed with err, %s", err))
+		return
+	}
+
+	if !hasAdmin {
+		ctx.Reply("You do not have permissions to run this command")
+		return
+	}
+
+	cmdName := args[0]
+
+	if cmdName == "disable" {
+		ctx.Reply("You can't disable the `disable` command!")
+		return
+	}
+
+	if c, found := commands[cmdName]; found {
+		c.enabled = false
+		ctx.Reply(fmt.Sprintf("Disabled `%s`", cmdName))
 	}
 }
