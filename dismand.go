@@ -63,6 +63,9 @@ func New(client *disgord.Client, cfg *Config) *Dismand {
 // RegisterDefaults registers the default Dismand commands
 //
 // - Ping
+// - Help
+// - Enable
+// - Disable
 func (d *Dismand) RegisterDefaults() *Dismand {
 	commands["ping"] = &cmd{
 		c:           pingPong,
