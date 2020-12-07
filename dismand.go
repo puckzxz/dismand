@@ -12,12 +12,13 @@ var commands = make(map[string]*cmd)
 type command func(*Context, []string)
 
 type cmd struct {
-	c           command
-	description string
-	group       string
-	example     string
-	enabled     bool
-	minPerm     disgord.PermissionBit
+	c               command
+	description     string
+	group           string
+	example         string
+	enabled         bool
+	minPerm         disgord.PermissionBit
+	allowedChannels []uint64
 }
 
 func (c *cmd) Description(desc string) *cmd {
@@ -38,6 +39,19 @@ func (c *cmd) Example(example string) *cmd {
 func (c *cmd) MinPermission(perm disgord.PermissionBit) *cmd {
 	c.minPerm = perm
 	return c
+}
+
+func (c *cmd) AllowedChannels(channels []uint64) {
+	c.allowedChannels = channels
+}
+
+func (c *cmd) containsAllowedChannel(channel uint64) bool {
+	for _, c := range c.allowedChannels {
+		if c == channel {
+			return true
+		}
+	}
+	return false
 }
 
 type Dismand struct {
@@ -130,6 +144,9 @@ func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) 
 	}
 
 	if cmd, ok := d.commands[commandName]; ok {
+		if !cmd.containsAllowedChannel(uint64(msg.ChannelID)) {
+			return
+		}
 		hasPerms, err := ctx.MemberHasPermission(cmd.minPerm)
 		if err != nil {
 			fmt.Println("Failed to get member permissions")
