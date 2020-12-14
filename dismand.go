@@ -143,9 +143,18 @@ func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) 
 		Message: msg,
 	}
 
+	defer func() {
+		if r := recover(); r != nil {
+			msg := "A fatal error occured\n" + fmt.Sprintf("`%v`\n", r)
+			ctx.Reply(msg)
+		}
+	}()
+
 	if cmd, ok := d.commands[commandName]; ok {
-		if !cmd.containsAllowedChannel(uint64(msg.ChannelID)) {
-			return
+		if len(cmd.allowedChannels) > 0 {
+			if !cmd.containsAllowedChannel(uint64(msg.ChannelID)) {
+				return
+			}
 		}
 		hasPerms, err := ctx.MemberHasPermission(cmd.minPerm)
 		if err != nil {
