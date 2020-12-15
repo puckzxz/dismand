@@ -45,9 +45,9 @@ func (c *cmd) AllowedChannels(channels []uint64) {
 	c.allowedChannels = channels
 }
 
-func (c *cmd) containsAllowedChannel(channel uint64) bool {
+func (c *cmd) containsAllowedChannel(channelID uint64) bool {
 	for _, c := range c.allowedChannels {
-		if c == channel {
+		if c == channelID {
 			return true
 		}
 	}
@@ -62,7 +62,18 @@ type Dismand struct {
 
 // Config contains settings for Dismand
 type Config struct {
-	Prefix string
+	Owner           string
+	Prefix          string
+	AllowedChannels []uint64
+}
+
+func (c *Config) messageIsInAllowedChannel(channelID uint64) bool {
+	for _, c := range c.AllowedChannels {
+		if c == channelID {
+			return true
+		}
+	}
+	return false
 }
 
 // New returns a Dismand instance
@@ -124,6 +135,12 @@ func (d *Dismand) On(command string, handler command) *cmd {
 
 func (d *Dismand) MessageHandler(s disgord.Session, evt *disgord.MessageCreate) {
 	msg := evt.Message
+
+	if len(d.cfg.AllowedChannels) > 0 {
+		if !d.cfg.messageIsInAllowedChannel(uint64(msg.ChannelID)) {
+			return
+		}
+	}
 
 	if !strings.HasPrefix(msg.Content, d.cfg.Prefix) {
 		return
