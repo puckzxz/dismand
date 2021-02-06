@@ -2,6 +2,8 @@ github.com/andersfylling/disgord v0.26.0 h1:W61GJ8lcHtmnExTE0mWe1aTxHs12R3SHPhnj
 github.com/andersfylling/disgord v0.26.0/go.mod h1:OwX6wyLlCh9UX8ve1p8KeLt8CU+BbcANQbPGbEJZdzU=
 github.com/andersfylling/disgord v0.26.2 h1:GJjiweR743+OX+glJdlXuDKivy4RriWCuvFFd4nZ2mg=
 github.com/andersfylling/disgord v0.26.2/go.mod h1:OwX6wyLlCh9UX8ve1p8KeLt8CU+BbcANQbPGbEJZdzU=
+github.com/andersfylling/disgord v0.26.3 h1:dce2fbx7NF8P3v81sUrpwvn5p6B6UePLoJr0fkyDsbA=
+github.com/andersfylling/disgord v0.26.3/go.mod h1:OwX6wyLlCh9UX8ve1p8KeLt8CU+BbcANQbPGbEJZdzU=
 github.com/andersfylling/snowflake/v5 v5.0.1 h1:unXbYSij6tRCGJzoLz9zl3nJsqd9hu7bbYSgB8K8/i0=
 github.com/andersfylling/snowflake/v5 v5.0.1/go.mod h1:AdhrB+kewjnQInv8cR7ABe2SGoVXh79njnipUnz1HFc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
