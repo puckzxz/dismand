@@ -9,7 +9,7 @@ import (
 
 var (
 	// ErrRoleNotFound is returned when the searched role is not found
-	ErrRoleNotFound = errors.New("Role not found")
+	ErrRoleNotFound = errors.New("role not found")
 )
 
 // Context contains the recieved message, the Disgord client, and the active session
