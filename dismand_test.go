@@ -39,7 +39,6 @@ func Test_DismandNew(t *testing.T) {
 }
 
 func Test_Disgoman_RegisterDefaults(t *testing.T) {
-
 	d := &Dismand{}
 	ptr := d.RegisterDefaults()
 	if ptr == nil {
