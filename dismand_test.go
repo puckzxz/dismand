@@ -37,7 +37,6 @@ func Test_DismandNew(t *testing.T) {
 }
 
 func Test_Disgoman_RegisterDefaults(t *testing.T) {
-
 	d := &Dismand{}
 	ptr := d.RegisterDefaults()
 	if ptr == nil {
@@ -47,5 +46,25 @@ func Test_Disgoman_RegisterDefaults(t *testing.T) {
 	_, ok := commands["ping"]
 	if !ok {
 		t.Error("Commands did not contain the default ping command")
+	}
+}
+
+func TestConfig_messageIsInAllowedChannel(t *testing.T) {
+	d := &Dismand{}
+	ptr := d.RegisterDefaults()
+	if ptr == nil {
+		t.Error("RegisterDefaults returned a nil pointer")
+	}
+
+	c := Config{}
+
+	c.AllowedChannels = []uint64{123, 456}
+
+	if c.messageIsInAllowedChannel(678) {
+		t.Error("Failed to detect unallowed channel")
+	}
+
+	if !c.messageIsInAllowedChannel(123) {
+		t.Error("Failed to detech allowed channel")
 	}
 }
